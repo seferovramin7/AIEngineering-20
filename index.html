@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Models Explained</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Creating with AI: An Introduction to Generative Models</h1>
+        <p>An interactive guide to VAEs and GANs with Keras</p>
+    </header>
+
+    <main>
+        <section id="intro">
+            <h2>What are Generative Models?</h2>
+            <p>In machine learning, models can be broadly categorized as <strong>discriminative</strong> or <strong>generative</strong>.</p>
+            <ul>
+                <li><strong>Discriminative Models:</strong> These models learn to distinguish between different classes of data. Given an input, they predict a label. For example, a model that looks at a picture and outputs "cat" or "dog" is discriminative. It learns the boundary <em>between</em> classes.</li>
+                <li><strong>Generative Models:</strong> These models learn the underlying distribution of the data itself. Instead of just labeling data, they can generate new, synthetic data samples that resemble the original data. For example, a generative model trained on faces could create brand-new, realistic-looking faces of people who do not exist.</li>
+            </ul>
+            <p>We will focus on two popular architectures for this task: <strong>VAEs</strong> and <strong>GANs</strong>.</p>
+        </section>
+
+        <section id="vae">
+            <h2>Variational Autoencoders (VAEs)</h2>
+            <p>A VAE is a generative model that learns a compressed representation of the data in a probabilistic manner. It consists of two main parts: an <strong>encoder</strong> and a <strong>decoder</strong>.</p>
+            
+            <h3>Step-by-Step Keras Implementation of a VAE</h3>
+            <div class="code-block">
+                <pre><code>
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Load and preprocess the data
+(x_train, _), (x_test, _) = keras.datasets.mnist.load_data()
+mnist_digits = np.concatenate([x_train, x_test], axis=0)
+mnist_digits = np.expand_dims(mnist_digits, -1).astype("float32") / 255
+                </code></pre>
+            </div>
+            <button id="run-vae">Run VAE & See Generated Digits</button>
+            <div id="vae-output" class="output"></div>
+        </section>
+
+        <section id="gan">
+            <h2>Generative Adversarial Networks (GANs)</h2>
+            <p>GANs use a novel, game-theoretic approach to generation. A GAN consists of two neural networks competing against each other: a <strong>Generator</strong> and a <strong>Discriminator</strong>.</p>
+
+            <h3>Step-by-Step Keras Implementation of a GAN</h3>
+            <div class="code-block">
+                <pre><code>
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+
+# Load and preprocess the data
+(x_train, _), (_, _) = keras.datasets.mnist.load_data()
+x_train = x_train.reshape(x_train.shape[0], 28, 28, 1).astype('float32')
+# Normalize the images to [-1, 1]
+x_train = (x_train - 127.5) / 127.5
+                </code></pre>
+            </div>
+            <button id="run-gan">Run GAN & See Generated Digits</button>
+            <div id="gan-output" class="output"></div>
+        </section>
+
+        <section id="comparison">
+            <h2>VAEs vs. GANs: A Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Variational Autoencoders (VAEs)</th>
+                        <th>Generative Adversarial Networks (GANs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Architecture</strong></td>
+                        <td>Encoder-Decoder.</td>
+                        <td>Generator-Discriminator.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Training</strong></td>
+                        <td>Stable, straightforward training with a single loss function.</td>
+                        <td>Unstable, difficult to train. Requires careful hyperparameter tuning.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Output Quality</strong></td>
+                        <td>Tends to produce slightly blurrier, but more diverse images.</td>
+                        <td>Can produce very sharp, high-fidelity images.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Latent Space</strong></td>
+                        <td>Learns an explicit, continuous, and well-structured latent space.</td>
+                        <td>Does not explicitly structure the latent space (though variations exist).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Use Case</strong></td>
+                        <td>Tasks requiring a structured latent space, like interpolation.</td>
+                        <td>Generating highly realistic samples.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Weakness</strong></td>
+                        <td>Lower sample quality (often blurry).</td>
+                        <td>Training instability and mode collapse (lack of diversity).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
