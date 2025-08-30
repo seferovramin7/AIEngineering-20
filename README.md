@@ -9,3 +9,6 @@ This is an interactive web application to explain the concepts of Generative Adv
 
 ## Homework
 - [Design Your Digital Fashion Collection with AI](assignments/homework-fashion-mnist.md)
+
+## Homework
+- [Design Your Digital Fashion Collection with AI](assignments/homework-fashion-mnist.md)
