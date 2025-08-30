@@ -374,4 +374,42 @@ After training, you can use the generator to create new digits from random noise
 | **Output Quality** | Tends to produce slightly blurrier, but more diverse images.     | Can produce very sharp, high-fidelity images.                           |
 | **Latent Space** | Learns an explicit, continuous, and well-structured latent space. | Does not explicitly structure the latent space (though variations exist). |
 | **Primary Use Case** | Tasks requiring a structured latent space, like interpolation. | Generating highly realistic samples.                                  |
-| **Weakness** | Lower sample quality (often blurry).                             | Training instability and mode collapse (lack of diversity).             |
+| **Weakness** | Lower sample quality (often blurry).                             | Training instability and mode collapse (lack of diversity).             |```python
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")  # aman untuk lingkungan tanpa display
+import matplotlib.pyplot as plt
+
+def save_image_grid(imgs, path="grid.png", rows=5, cols=5, normalize=True):
+    """
+    imgs: np.ndarray, shape (N,H,W,1|3), nilai [0,1] atau [-1,1]
+    path: nama file output PNG
+    rows, cols: ukuran grid
+    normalize: map [-1,1] -> [0,1] dan clip ke [0,1] jika perlu
+    """
+    imgs = np.asarray(imgs)
+    if imgs.ndim == 3:  # (N,H,W) -> (N,H,W,1)
+        imgs = imgs[..., np.newaxis]
+
+    N, H, W, C = imgs.shape
+    imgs = imgs[:rows * cols].astype("float32")
+
+    if normalize:
+        if imgs.min() < 0:      # GAN dengan tanh
+            imgs = (imgs + 1.0) / 2.0
+        imgs = np.clip(imgs, 0.0, 1.0)
+
+    canvas = np.zeros((rows * H, cols * W, C), dtype=imgs.dtype)
+    for i, img in enumerate(imgs):
+        r, c = divmod(i, cols)
+        canvas[r*H:(r+1)*H, c*W:(c+1)*W, :] = img
+
+    plt.figure(figsize=(6, 6))
+    if C == 1:
+        plt.imshow(canvas.squeeze(-1), cmap="gray")
+    else:
+        plt.imshow(canvas)
+    plt.axis("off")
+    plt.tight_layout(pad=0)
+    plt.savefig(path, bbox_inches="tight", pad_inches=0)
+    plt.close()
